@@ -1,12 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MainPage from "./pages/MainPage";
 import useTasksStore from "@entities/Tasks";
 
 function App() {
-  const { fetchTasks, tasks } = useTasksStore();
+  const { fetchTasks, fetchFavorites } = useTasksStore();
+
   useEffect(() => {
-    // fetchTasks();
+    fetchTasks();
+    fetchFavorites();
   }, []);
+
   return (
     <div className="App">
       <MainPage />

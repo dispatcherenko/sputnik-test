@@ -1,42 +1,139 @@
-import React from "react";
-import TaskCard from "../shared/UI/TaskCard";
-import { List } from "antd";
+import React, { useState } from "react";
+import TaskCard from "./UI/TaskCard";
+import { Button, List, Modal, Typography } from "antd";
 import useTasksStore from "@entities/Tasks";
 import styled from "styled-components";
+import TasksHeader from "./TasksHeader";
+
+const TasksList = styled(List)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  box-shadow: 0 0 20px rgba(100, 100, 100, 0.2);
+  border: none;
+
+  margin: 5vh 10vw 150px;
+`;
+
+const TaskItem = styled(List.Item)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const MoreButton = styled(Button)`
+  text-align: center;
+  height: 32;
+  line-height: 32px;
+  margin: 15px 30vw;
+`;
+
+const options = [
+  { label: "Выполненные", value: "complete" },
+  { label: "Невыполненные", value: "notComplete" },
+  { label: "Избранное", value: "favorites" },
+];
+const defaultCheckedList = [...options];
 
 const TaskList = (props: any) => {
-  const { tasks } = useTasksStore();
+  const [checkedList, setCheckedList] = useState<Filter[]>(defaultCheckedList);
 
-  const TasksList = styled(List)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  const {
+    filteredTasks,
+    deleteTask,
+    isLoading,
+    fetchTasks,
+    increaseLimit,
+    total,
+    limit,
+  } = useTasksStore();
 
-    margin: 5vh 25vw;
-  `;
+  const [selectedItem, setSelectedItem] = useState({
+    id: 0,
+    attributes: {
+      title: "",
+      description: "",
+      status: "",
+      createdAt: "",
+    },
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const TaskItem = styled(List.Item)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  `;
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    deleteTask(selectedItem.id);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onLoadMore = () => {
+    increaseLimit();
+    fetchTasks();
+  };
+
+  const loadMore =
+    !isLoading && limit < total ? (
+      <MoreButton onClick={onLoadMore}>Загрузить еще...</MoreButton>
+    ) : null;
 
   return (
-    <TasksList
-      header="Задачи"
-      bordered
-      dataSource={tasks}
-      renderItem={(item: any) => (
-        <TaskItem>
-          <TaskCard
-            title={item.attributes.title}
-            description="Мне задали дз по математике, ин язу, русскому языку и географии"
-            createdAt="16.07.24"
-            updatedAt="16.07.24"
+    <>
+      <Modal
+        open={isModalOpen}
+        footer={
+          <Button danger onClick={handleDelete}>
+            Удалить
+          </Button>
+        }
+        onCancel={handleCancel}
+      >
+        <div>
+          <Typography.Title level={5}>Название задачи</Typography.Title>
+          <Typography.Text>{selectedItem.attributes.title}</Typography.Text>
+        </div>
+        <div>
+          <Typography.Title level={5}>Описание задачи</Typography.Title>
+          <Typography.Text>
+            {selectedItem.attributes.description}
+          </Typography.Text>
+        </div>
+        <div>
+          <Typography.Title level={5}>Дата создания</Typography.Title>
+          <Typography.Text>
+            {new Date(selectedItem.attributes.createdAt).toLocaleString()}
+          </Typography.Text>
+        </div>
+      </Modal>
+      <TasksList
+        header={
+          <TasksHeader
+            options={options}
+            checkedList={checkedList}
+            setCheckedList={setCheckedList}
           />
-        </TaskItem>
-      )}
-    ></TasksList>
+        }
+        loading={isLoading}
+        loadMore={loadMore}
+        bordered
+        dataSource={filteredTasks}
+        renderItem={(item: any) => (
+          <TaskItem>
+            <TaskCard
+              item={item}
+              showModal={showModal}
+              setSelectedItem={setSelectedItem}
+            />
+          </TaskItem>
+        )}
+      ></TasksList>
+    </>
   );
 };
 
