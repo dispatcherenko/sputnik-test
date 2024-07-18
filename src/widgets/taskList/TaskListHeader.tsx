@@ -1,27 +1,7 @@
 import useTasksStore from "@features/tasks/tasks";
 import { Checkbox, Collapse } from "antd";
 import { useState } from "react";
-import styled from "styled-components";
-
-const Header = styled.header`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-`;
-
-const FiltersCollapse = styled(Collapse)`
-  position: absolute;
-  width: 180px;
-  right: 10px;
-  z-index: 1000;
-
-  user-select: none;
-`;
-
-const CheckboxWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+import Style from "./styles/TaskListHeader.styled";
 
 type PropTypes = {
   options: Filter[];
@@ -53,14 +33,14 @@ const TasksHeader = ({ options, checkedList, setCheckedList }: PropTypes) => {
   };
 
   return (
-    <Header>
+    <Style.Header>
       <h1>Задачи</h1>
-      <FiltersCollapse
+      <Style.FiltersCollapse
         items={[
           {
             label: "Фильтры",
             children: (
-              <CheckboxWrapper>
+              <Style.CheckboxWrapper>
                 <Checkbox
                   indeterminate={indeterminate}
                   onChange={handleCheckAllChange}
@@ -79,12 +59,12 @@ const TasksHeader = ({ options, checkedList, setCheckedList }: PropTypes) => {
                     {option.label}
                   </Checkbox>
                 ))}
-              </CheckboxWrapper>
+              </Style.CheckboxWrapper>
             ),
           },
         ]}
       />
-    </Header>
+    </Style.Header>
   );
 };
 

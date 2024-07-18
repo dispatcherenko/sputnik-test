@@ -105,6 +105,8 @@ const useTasksStore = create<TasksState>((set, get) => ({
         total: total,
         isLoading: false,
       }));
+
+      get().updateFilter(get().filters);
     } catch (error: any) {
       set((state) => ({
         ...state,
@@ -134,7 +136,7 @@ const useTasksStore = create<TasksState>((set, get) => ({
 
       set((state) => ({
         ...state,
-        tasks: [...tasks, newTask],
+        filteredTasks: [...tasks, newTask],
         isLoading: false,
       }));
     } catch (error: any) {
@@ -163,7 +165,7 @@ const useTasksStore = create<TasksState>((set, get) => ({
 
       set((state) => ({
         ...state,
-        tasks: newTasks,
+        filteredTasks: newTasks,
         isLoading: false,
       }));
     } catch (error: any) {
@@ -175,7 +177,7 @@ const useTasksStore = create<TasksState>((set, get) => ({
     }
   },
   changeTask: async (id: number, task: PostTask) => {
-    const tasks = get().tasks;
+    const tasks = get().filteredTasks;
     const current = tasks.find((task) => task.id === id);
     const prevStatus = current?.attributes.status;
 
@@ -185,13 +187,13 @@ const useTasksStore = create<TasksState>((set, get) => ({
 
     set((state) => ({
       ...state,
-      tasks: state.tasks.map((task: Task) =>
+      filteredTasks: state.tasks.map((task: Task) =>
         task.id === id
           ? {
               ...task,
               attributes: {
                 ...task.attributes,
-                status: newStatus ?? prevStatus,
+                status: newStatus,
               },
             }
           : task

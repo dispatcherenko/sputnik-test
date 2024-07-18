@@ -1,8 +1,8 @@
 import { useState } from "react";
-import TaskList from "@widgets/TaskList";
+import TaskList from "@widgets/taskList/TaskList";
 import { Button, Input, Modal, Typography } from "antd";
 import styled from "styled-components";
-import useTasksStore from "@entities/Tasks";
+import useTasksStore from "@features/tasks/tasks";
 
 const AddButton = styled(Button)`
   position: fixed;

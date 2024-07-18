@@ -1,33 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TaskCard from "../UI/TaskCard";
-import { Button, List, Modal, Typography } from "antd";
+import { Button, Modal, Typography } from "antd";
 import useTasksStore from "@features/tasks/tasks";
-import styled from "styled-components";
 import TasksHeader from "./TaskListHeader";
-
-const TasksList = styled(List)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  box-shadow: 0 0 20px rgba(100, 100, 100, 0.2);
-  border: none;
-
-  margin: 5vh 10vw 150px;
-`;
-
-const TaskItem = styled(List.Item)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const MoreButton = styled(Button)`
-  text-align: center;
-  height: 32;
-  line-height: 32px;
-  margin: 15px 30vw;
-`;
+import Style from "./styles/TaskList.styled";
 
 const options = [
   { label: "Выполненные", value: "complete" },
@@ -80,7 +56,7 @@ const TaskList = () => {
 
   const loadMore =
     !isLoading && limit < total ? (
-      <MoreButton onClick={onLoadMore}>Загрузить еще...</MoreButton>
+      <Style.MoreButton onClick={onLoadMore}>Загрузить еще...</Style.MoreButton>
     ) : null;
 
   return (
@@ -111,7 +87,7 @@ const TaskList = () => {
           </Typography.Text>
         </div>
       </Modal>
-      <TasksList
+      <Style.TasksList
         header={
           <TasksHeader
             options={options}
@@ -124,15 +100,15 @@ const TaskList = () => {
         bordered
         dataSource={filteredTasks}
         renderItem={(item: any) => (
-          <TaskItem>
+          <Style.TaskItem>
             <TaskCard
               item={item}
               showModal={showModal}
               setSelectedItem={setSelectedItem}
             />
-          </TaskItem>
+          </Style.TaskItem>
         )}
-      ></TasksList>
+      ></Style.TasksList>
     </>
   );
 };
