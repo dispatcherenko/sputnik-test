@@ -1,4 +1,4 @@
-import useTasksStore from "@entities/Tasks";
+import useTasksStore from "@features/tasks/tasks";
 import { Checkbox, Collapse } from "antd";
 import { useState } from "react";
 import styled from "styled-components";

@@ -38,25 +38,26 @@ const useTasksStore = create<TasksState>((set, get) => ({
       filters: Filter[],
       favorites: Task[]
     ): Task[] => {
-      return tasks.filter((task) => {
-        // Если нет активных фильтров, показываем все задачи
-        if (filters.length === 0) {
-          return [];
-        }
+      const completeFilter = filters.find(
+        (filter) => filter.value === "complete"
+      );
+      const notCompleteFilter = filters.find(
+        (filter) => filter.value === "notComplete"
+      );
+      const favoritesFilter = filters.find(
+        (filter) => filter.value === "favorites"
+      );
 
-        // Проверяем каждый фильтр по отдельности
-        return filters.some((filter) => {
-          if (filter.value === "complete") {
-            return task.attributes.status === "complete";
-          }
-          if (filter.value === "notComplete") {
-            return task.attributes.status === "notComplete";
-          }
-          if (filter.value === "favorites") {
-            return favorites.some((favorite) => favorite.id === task.id);
-          }
-          return get().tasks; // Если фильтр не соответствует ни одному условию, исключаем задачу
-        });
+      return tasks.filter((task) => {
+        const complete = task.attributes.status.startsWith("complete");
+        const notComplete = task.attributes.status.startsWith("not");
+        const favorite = favorites.some((fav) => fav.id === task.id);
+
+        const matchesComplete = completeFilter && complete;
+        const matchesNotComplete = notCompleteFilter && notComplete;
+        const matchesFavorites = favoritesFilter && favorite;
+
+        return matchesComplete || matchesNotComplete || matchesFavorites;
       });
     };
 
@@ -100,6 +101,7 @@ const useTasksStore = create<TasksState>((set, get) => ({
       set((state) => ({
         ...state,
         tasks: tasks,
+        filteredTasks: tasks,
         total: total,
         isLoading: false,
       }));

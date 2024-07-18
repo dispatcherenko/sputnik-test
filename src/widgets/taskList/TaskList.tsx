@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import TaskCard from "./UI/TaskCard";
+import TaskCard from "../UI/TaskCard";
 import { Button, List, Modal, Typography } from "antd";
-import useTasksStore from "@entities/Tasks";
+import useTasksStore from "@features/tasks/tasks";
 import styled from "styled-components";
-import TasksHeader from "./TasksHeader";
+import TasksHeader from "./TaskListHeader";
 
 const TasksList = styled(List)`
   display: flex;
@@ -36,7 +36,7 @@ const options = [
 ];
 const defaultCheckedList = [...options];
 
-const TaskList = (props: any) => {
+const TaskList = () => {
   const [checkedList, setCheckedList] = useState<Filter[]>(defaultCheckedList);
 
   const {

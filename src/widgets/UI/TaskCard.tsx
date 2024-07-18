@@ -1,6 +1,6 @@
 import { ReactComponent as DoneIcon } from "@shared/icons/done.svg";
 import { ReactComponent as StarIcon } from "@shared/icons/star.svg";
-import useTasksStore from "@entities/Tasks";
+import useTasksStore from "@features/tasks/tasks";
 import styled from "styled-components";
 import { Button } from "antd";
 import { useEffect, useState } from "react";
